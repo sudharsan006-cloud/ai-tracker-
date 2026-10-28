@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>AI Life Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+  <div id="app" class="app-container">
+    
+    <!-- ==================== ONBOARDING VIEW ==================== -->
+    <div id="view-onboarding" class="view active">
+      <div class="video-canvas-container">
+        <!-- Interactive Simulated Keyframe Scrub Canvas -->
+        <canvas id="scrub-canvas"></canvas>
+        <div class="video-overlay-scrim"></div>
+      </div>
+
+      <button id="btn-skip-onboarding" class="btn-text btn-skip">Skip</button>
+
+      <div class="onboarding-content">
+        <div class="slide-indicator" id="dots-container">
+          <span class="dot active"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+        </div>
+
+        <div class="slide-text-wrapper" id="slide-text-wrapper">
+          <h1 id="slide-title" class="slide-title">Your money and your health, in one place</h1>
+          <p id="slide-subtitle" class="slide-subtitle">Connect your accounts and start tracking.</p>
+        </div>
+
+        <div class="onboarding-actions">
+          <button id="btn-next-slide" class="btn-primary btn-block">
+            <span>Next</span>
+            <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== AUTH VIEW (LOGIN / SIGNUP) ==================== -->
+    <div id="view-auth" class="view">
+      <div class="auth-card glass-panel">
+        <div class="auth-brand">
+          <div class="brand-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect width="20" height="14" x="2" y="5" rx="2"/>
+              <line x1="2" x2="22" y1="10" y2="10"/>
+            </svg>
+          </div>
+          <h2 id="auth-title">Welcome back</h2>
+          <p id="auth-subtitle">Sign in to your AI Life Tracker</p>
+        </div>
+
+        <div class="auth-error-banner" id="auth-error-banner" style="display: none;"></div>
+
+        <form id="auth-form" class="auth-form">
+          <div class="form-group">
+            <label for="auth-email">Email</label>
+            <div class="input-icon-wrap">
+              <svg class="field-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+              <input type="email" id="auth-email" required placeholder="you@example.com" autocomplete="email">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="auth-password">Password</label>
+            <div class="input-icon-wrap">
+              <svg class="field-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              <input type="password" id="auth-password" required minlength="8" placeholder="••••••••" autocomplete="current-password">
+              <button type="button" class="btn-toggle-pw" id="btn-toggle-pw" aria-label="Toggle password visibility">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+            <span class="field-hint" id="pw-hint" style="display: none;">Minimum 8 characters</span>
+          </div>
+
+          <button type="submit" id="btn-auth-submit" class="btn-primary btn-block">
+            <span id="btn-auth-text">Sign In</span>
+          </button>
+        </form>
+
+        <div class="auth-footer">
+          <span id="auth-switch-prompt">Don't have an account?</span>
+          <button type="button" id="btn-switch-auth" class="btn-link">Sign Up</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== HOME SHELL VIEW ==================== -->
+    <div id="view-home" class="view">
+      <!-- Top Navigation Bar -->
+      <header class="app-header glass-header">
+        <div class="header-left">
+          <h2 id="header-tab-title" class="header-title">Expenses</h2>
+        </div>
+        <div class="header-actions">
+          <button id="btn-open-reminders" class="icon-btn" title="Reminders" aria-label="Reminders">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+            </svg>
+          </button>
+          <button id="btn-open-privacy" class="icon-btn" title="Privacy & Data" aria-label="Privacy & Data">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+          </button>
+          <button id="btn-open-banks" class="icon-btn" title="Bank Accounts" aria-label="Bank Accounts">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 14v4M12 14v4M16 14v4"/>
+            </svg>
+          </button>
+          <button id="btn-open-profile" class="icon-btn" title="Profile" aria-label="Profile">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- Phase 6 Status Banners & Budget Alert Toast -->
+      <div id="cold-start-banner" class="cold-start-banner" style="display: none;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span>The server is waking up, this can take up to a minute.</span>
+      </div>
+      <div id="offline-banner" class="offline-banner" style="display: none;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="1" y1="1" x2="23" y2="23"/><path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"/><path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"/><path d="M10.71 5.05A16 16 0 0 1 22.58 9"/><path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
+        <span>No connection. Showing no new data.</span>
+      </div>
+      <div id="budget-alert-toast" class="budget-alert-toast" style="display: none;">
+        <div class="toast-content">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span id="budget-alert-toast-text">Budget alert: one of your budgets is at 80%.</span>
+        </div>
+        <button class="toast-close" id="btn-close-toast">&times;</button>
+      </div>
+
+      <!-- Main Tab Body -->
+      <main class="main-content">
+        <!-- Expenses Tab (Phase 2 Core) -->
+        <section id="tab-expenses" class="tab-pane active">
+          <!-- Expenses Action Toolbar -->
+          <div class="expenses-toolbar">
+            <div class="toolbar-actions">
+              <button id="btn-open-review" class="btn-tool" title="Review Queue">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                <span>Review</span>
+                <span id="review-badge-count" class="badge-count" style="display: none;">0</span>
+              </button>
+              <button id="btn-open-categories" class="btn-tool" title="Categories">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/></svg>
+                <span>Categories</span>
+              </button>
+              <button id="btn-open-budgets" class="btn-tool" title="Budgets">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
+                <span>Budgets</span>
+              </button>
+            </div>
+            <button id="btn-add-transaction" class="btn-primary btn-sm">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <span>Add</span>
+            </button>
+          </div>
+
+          <!-- Filter Bar -->
+          <div class="expenses-filter-bar">
+            <div class="filter-chips">
+              <select id="filter-category" class="filter-select">
+                <option value="">All Categories</option>
+              </select>
+              <select id="filter-account" class="filter-select">
+                <option value="">All Accounts</option>
+              </select>
+              <div class="direction-toggle">
+                <button type="button" class="dir-chip active" data-dir="all">All</button>
+                <button type="button" class="dir-chip" data-dir="debit">Debit</button>
+                <button type="button" class="dir-chip" data-dir="credit">Credit</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Transactions List Container -->
+          <div id="transactions-container" class="transactions-container">
+            <div id="transactions-list" class="transactions-list">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </section>
+
+        <!-- Fitness Tab (Phase 4) -->
+        <section id="tab-fitness" class="tab-pane">
+          <!-- Date Bar -->
+          <div class="fitness-date-bar glass-panel">
+            <button id="btn-fitness-prev-day" class="icon-btn" title="Previous Day">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <div class="date-text-wrap">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              <span id="fitness-date-display" class="date-display">Today</span>
+            </div>
+            <button id="btn-fitness-next-day" class="icon-btn" title="Next Day" disabled>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+          </div>
+
+          <!-- Buttons Row -->
+          <div class="fitness-actions-row">
+            <button id="btn-open-exercises" class="fitness-quick-btn">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+              <span>Exercises</span>
+            </button>
+            <button id="btn-open-workouts-history" class="fitness-quick-btn">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="2"/><path d="m4 17 6-4 4 2 6-5"/></svg>
+              <span>Workouts</span>
+            </button>
+            <button id="btn-open-fitness-charts" class="fitness-quick-btn">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
+              <span>Charts</span>
+            </button>
+            <button id="btn-open-fitness-goals" class="fitness-quick-btn">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+              <span>Goals</span>
+            </button>
+          </div>
+
+          <!-- Steps Card -->
+          <div class="metric-card glass-panel steps-card">
+            <div class="metric-card-top">
+              <div class="progress-ring-wrap">
+                <svg class="progress-ring" width="68" height="68">
+                  <circle class="ring-bg" stroke="rgba(255,255,255,0.08)" stroke-width="6" fill="transparent" r="28" cx="34" cy="34"/>
+                  <circle id="steps-ring-circle" class="ring-indicator" stroke="#6366F1" stroke-width="6" stroke-linecap="round" fill="transparent" r="28" cx="34" cy="34" stroke-dasharray="175.93" stroke-dashoffset="175.93"/>
+                </svg>
+                <div class="ring-center-icon">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#818CF8" stroke-width="2"><circle cx="12" cy="5" r="2"/><path d="m4 17 6-4 4 2 6-5"/></svg>
+                </div>
+              </div>
+              <div class="metric-info">
+                <div class="metric-value-row">
+                  <span id="fitness-steps-value" class="metric-number">0</span>
+                  <span class="metric-unit">steps</span>
+                </div>
+                <div class="metric-sub">
+                  of <span id="fitness-steps-goal">8000</span> (<span id="fitness-steps-percent">0</span>%)
+                </div>
+                <div id="fitness-steps-source" class="metric-source-tag">no data yet</div>
+              </div>
+            </div>
+            <div class="metric-card-actions">
+              <button id="btn-edit-steps" class="btn-text btn-sm">Edit</button>
+              <button id="btn-sync-steps" class="btn-primary btn-sm">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                <span>Sync steps</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Water Card -->
+          <div class="metric-card glass-panel water-card">
+            <div class="metric-card-top">
+              <div class="progress-ring-wrap">
+                <svg class="progress-ring" width="68" height="68">
+                  <circle class="ring-bg" stroke="rgba(255,255,255,0.08)" stroke-width="6" fill="transparent" r="28" cx="34" cy="34"/>
+                  <circle id="water-ring-circle" class="ring-indicator" stroke="#06B6D4" stroke-width="6" stroke-linecap="round" fill="transparent" r="28" cx="34" cy="34" stroke-dasharray="175.93" stroke-dashoffset="175.93"/>
+                </svg>
+                <div class="ring-center-icon">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#22D3EE" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+                </div>
+              </div>
+              <div class="metric-info">
+                <div class="metric-value-row">
+                  <span id="fitness-water-value" class="metric-number">0</span>
+                  <span class="metric-unit">ml</span>
+                </div>
+                <div class="metric-sub">
+                  of <span id="fitness-water-goal">2000</span> ml (<span id="fitness-water-percent">0</span>%)
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Add Chips -->
+            <div class="quick-add-row">
+              <button class="chip-add" data-water="150">+150 ml</button>
+              <button class="chip-add" data-water="250">+250 ml</button>
+              <button class="chip-add" data-water="500">+500 ml</button>
+              <button id="btn-custom-water" class="chip-add chip-custom">Custom</button>
+            </div>
+
+            <!-- Drinks List -->
+            <div id="fitness-water-entries-wrap" class="entries-collapse" style="display: none;">
+              <div class="entries-header">Today's Drinks</div>
+              <div id="fitness-water-list" class="entries-list"></div>
+            </div>
+          </div>
+
+          <!-- Calories Card -->
+          <div class="metric-card glass-panel calories-card">
+            <div class="metric-card-top">
+              <div class="progress-ring-wrap">
+                <svg class="progress-ring" width="68" height="68">
+                  <circle class="ring-bg" stroke="rgba(255,255,255,0.08)" stroke-width="6" fill="transparent" r="28" cx="34" cy="34"/>
+                  <circle id="calories-ring-circle" class="ring-indicator" stroke="#F59E0B" stroke-width="6" stroke-linecap="round" fill="transparent" r="28" cx="34" cy="34" stroke-dasharray="175.93" stroke-dashoffset="175.93"/>
+                </svg>
+                <div class="ring-center-icon">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FBBF24" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8zM6 1v3M10 1v3M14 1v3"/></svg>
+                </div>
+              </div>
+              <div class="metric-info">
+                <div class="metric-value-row">
+                  <span id="fitness-calories-value" class="metric-number">0</span>
+                  <span class="metric-unit">kcal</span>
+                </div>
+                <div id="fitness-calorie-goal-sub" class="metric-sub">
+                  No goal set
+                </div>
+              </div>
+            </div>
+
+            <div class="calorie-meta-row">
+              <span id="fitness-calories-burned-text" class="meta-label">Burned in workouts (estimate): 0 kcal</span>
+              <button id="btn-add-food" class="btn-primary btn-sm">Add food</button>
+            </div>
+
+            <div id="fitness-bmr-box" class="bmr-banner">
+              Add sex, birth date, height and weight in your profile to see a resting energy estimate.
+            </div>
+
+            <!-- Food entries list -->
+            <div id="fitness-food-entries-wrap" class="entries-collapse" style="display: none;">
+              <div class="entries-header">Today's Food</div>
+              <div id="fitness-food-list" class="entries-list"></div>
+            </div>
+          </div>
+
+          <!-- Workouts Card -->
+          <div class="metric-card glass-panel workouts-card">
+            <div class="workouts-card-header">
+              <div class="workouts-header-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2"><path d="M6 5v14M18 5v14M2 9h4M18 9h4M2 15h4M18 15h4M6 12h12"/></svg>
+                <h4>Workouts Today</h4>
+              </div>
+              <button id="btn-log-workout-today" class="btn-primary btn-sm">Log workout</button>
+            </div>
+            <div id="fitness-today-workouts-list" class="workouts-day-list">
+              <p class="empty-state-small">No workouts logged for this day.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Insights Tab -->
+        <section id="tab-insights" class="tab-pane">
+          <!-- Nudge Banner -->
+          <div id="insight-nudge-banner" class="nudge-banner glass-panel">
+            <div class="nudge-content">
+              <div class="nudge-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+              </div>
+              <p id="nudge-banner-text" class="nudge-text">Your mood entries were low on 4 of the last 7 days. This app cannot tell you why. If it is weighing on you, talking with someone you trust or a health professional can help.</p>
+            </div>
+            <button id="btn-dismiss-nudge" class="btn-text btn-dismiss-nudge">Dismiss</button>
+          </div>
+
+          <!-- Mood Card -->
+          <div class="mood-card glass-panel">
+            <div class="card-header-row">
+              <h3>How are you today?</h3>
+              <button id="btn-open-mood-history" class="btn-text btn-sm">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <span>History</span>
+              </button>
+            </div>
+            
+            <div class="mood-face-selector">
+              <button type="button" class="mood-face-btn" data-score="1" title="Very Low">
+                <span class="face-emoji">😞</span>
+                <span class="face-text">Very Low</span>
+              </button>
+              <button type="button" class="mood-face-btn" data-score="2" title="Low">
+                <span class="face-emoji">🙁</span>
+                <span class="face-text">Low</span>
+              </button>
+              <button type="button" class="mood-face-btn" data-score="3" title="Neutral">
+                <span class="face-emoji">😐</span>
+                <span class="face-text">Neutral</span>
+              </button>
+              <button type="button" class="mood-face-btn active" data-score="4" title="Good">
+                <span class="face-emoji">🙂</span>
+                <span class="face-text">Good</span>
+              </button>
+              <button type="button" class="mood-face-btn" data-score="5" title="Great">
+                <span class="face-emoji">😄</span>
+                <span class="face-text">Great</span>
+              </button>
+            </div>
+
+            <div class="form-group mood-note-group">
+              <label for="input-mood-note">Private note, never sent to AI</label>
+              <textarea id="input-mood-note" maxlength="300" rows="2" placeholder="Private note about how you feel today...">Had a good morning workout and productive work day.</textarea>
+              <div class="char-count"><span id="mood-char-count">56</span>/300</div>
+            </div>
+
+            <div class="mood-card-actions">
+              <button id="btn-save-mood" class="btn-primary btn-sm">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>Save</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Insight Card 1: Spending this month -->
+          <div class="insight-card glass-panel" id="card-spending-month">
+            <div class="insight-card-header">
+              <div class="insight-title-wrap">
+                <div class="insight-icon-box spending-color">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+                </div>
+                <h3>Spending this month</h3>
+              </div>
+            </div>
+
+            <!-- Numbers / Facts -->
+            <div class="insight-facts" id="facts-spending-month">
+              <div class="fact-row">
+                <span class="fact-label">Spent</span>
+                <span class="fact-value" id="fact-spending-spent">₹12,450.00</span>
+              </div>
+              <div class="fact-row">
+                <span class="fact-label">Income</span>
+                <span class="fact-value" id="fact-spending-income">₹50,000.00</span>
+              </div>
+              <div class="fact-row">
+                <span class="fact-label">Same period last month</span>
+                <span class="fact-value" id="fact-spending-prev">₹11,000.00</span>
+              </div>
+              <div class="fact-row">
+                <span class="fact-label">Change</span>
+                <span class="fact-value" id="fact-spending-change">₹1,450.00 (13.2%)</span>
+              </div>
+              
+              <div class="fact-section-title">Top categories</div>
+              <div id="fact-spending-top-cats" class="fact-sub-list">
+                <div class="fact-row sub-row"><span class="fact-label">Food & Dining</span><span class="fact-value">₹4,200.00 (33.7%)</span></div>
+                <div class="fact-row sub-row"><span class="fact-label">Shopping</span><span class="fact-value">₹2,800.00 (22.5%)</span></div>
+              </div>
+
+              <div class="fact-section-title">Budgets</div>
+              <div id="fact-spending-budgets" class="fact-sub-list">
+                <div class="fact-row sub-row"><span class="fact-label">Overall</span><span class="fact-value">₹12,450.00 of ₹20,000.00 (62.3%)</span></div>
+              </div>
+            </div>
+
+            <!-- AI Summary Box -->
+            <div class="ai-summary-box" id="ai-summary-spending">
+              <div class="ai-summary-top">
+                <div class="ai-badge"><span class="sparkle">✦</span> AI Summary</div>
+                <span class="stale-chip" id="stale-chip-spending" style="display: none;">Out of date: your data changed</span>
+              </div>
+              <p class="ai-summary-text" id="ai-text-spending">You have spent ₹12,450.00 this month, which is ₹1,450.00 more than the same period last month. Your largest category is Food & Dining at ₹4,200.00. You have used 62.3% of your overall ₹20,000.00 budget.</p>
+              <div class="ai-disclaimer">AI-written from the numbers above. Not financial or medical advice.</div>
+            </div>
+
+            <div class="insight-fallback-msg" id="fallback-spending" style="display: none;"></div>
+
+            <!-- Actions -->
+            <div class="insight-card-footer">
+              <button class="btn-primary btn-block btn-generate-summary" data-kind="spending_month" id="btn-generate-spending">
+                <span class="sparkle">✦</span>
+                <span class="btn-text-label">Refresh summary</span>
+              </button>
+              <div class="calls-left-hint"><span class="calls-count">37</span> summaries left today</div>
+            </div>
+          </div>
+
+          <!-- Insight Card 2: Fitness, last 7 days -->
+          <div class="insight-card glass-panel" id="card-fitness-week">
+            <div class="insight-card-header">
+              <div class="insight-title-wrap">
+                <div class="insight-icon-box fitness-color">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="2"/><path d="m4 17 6-4 4 2 6-5"/></svg>
+                </div>
+                <h3>Fitness, last 7 days</h3>
+              </div>
+            </div>
+
+            <!-- Numbers / Facts -->
+            <div class="insight-facts" id="facts-fitness-week">
+              <div class="fact-row">
+                <span class="fact-label">Days with data</span>
+                <span class="fact-value" id="fact-fitness-days">5</span>
+              </div>
+              <div class="fact-row">
+                <span class="fact-label">Average steps</span>
+                <span class="fact-value" id="fact-fitness-avg-steps">6,500</span>
+              </div>
+              <div class="fact-row">
+                <span class="fact-label">Average water (ml)</span>
+                <span class="fact-value" id="fact-fitness-avg-water">1,800</span>
+              </div>
+              <div class="fact-row">
+                <span class="fact-label">Average calories in</span>
+                <span class="fact-value" id="fact-fitness-avg-calories">2,100</span>
+              </div>
+              <div class="fact-row">
+                <span class="fact-label">Days steps goal met</span>
+                <span class="fact-value" id="fact-fitness-steps-goal">2 of 7</span>
+              </div>
+              <div class="fact-row">
+                <span class="fact-label">Days water goal met</span>
+                <span class="fact-value" id="fact-fitness-water-goal">3 of 7</span>
+              </div>
+              <div class="fact-row">
+                <span class="fact-label">Workouts</span>
+                <span class="fact-value" id="fact-fitness-workouts">3 (95 min)</span>
+              </div>
+              <div class="fact-row">
+                <span class="fact-label">Calories burned (estimate)</span>
+                <span class="fact-value" id="fact-fitness-cal-burned">640</span>
+              </div>
+              <div class="fact-row">
+                <span class="fact-label">Best steps day</span>
+                <span class="fact-value" id="fact-fitness-best-steps">11,000 steps on 2026-10-22</span>
+              </div>
+            </div>
+
+            <!-- AI Summary Box -->
+            <div class="ai-summary-box" id="ai-summary-fitness">
+              <div class="ai-summary-top">
+                <div class="ai-badge"><span class="sparkle">✦</span> AI Summary</div>
+                <span class="stale-chip" id="stale-chip-fitness" style="display: none;">Out of date: your data changed</span>
+              </div>
+              <p class="ai-summary-text" id="ai-text-fitness">Over the last 7 days you logged activity on 5 days, averaging 6,500 steps and 1,800 ml of water. You met your steps goal on 2 days and completed 3 workouts totaling 95 minutes with 640 estimated calories burned.</p>
+              <div class="ai-disclaimer">AI-written from the numbers above. Not financial or medical advice.</div>
+            </div>
+
+            <div class="insight-fallback-msg" id="fallback-fitness" style="display: none;"></div>
+
+            <!-- Actions -->
+            <div class="insight-card-footer">
+              <button class="btn-primary btn-block btn-generate-summary" data-kind="fitness_week" id="btn-generate-fitness">
+                <span class="sparkle">✦</span>
+                <span class="btn-text-label">Refresh summary</span>
+              </button>
+              <div class="calls-left-hint"><span class="calls-count">37</span> summaries left today</div>
+            </div>
+          </div>
+
+          <!-- Insight Card 3: Overview, last 7 days -->
+          <div class="insight-card glass-panel" id="card-overview-week">
+            <div class="insight-card-header">
+              <div class="insight-title-wrap">
+                <div class="insight-icon-box overview-color">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+                </div>
+                <h3>Overview, last 7 days</h3>
+              </div>
+            </div>
+
+            <!-- Numbers / Facts -->
+            <div class="insight-facts" id="facts-overview-week">
+              <div class="fact-row">
+                <span class="fact-label">Spent (7 days)</span>
+                <span class="fact-value" id="fact-overview-spent">₹3,200.00</span>
+              </div>
+              <div class="fact-row">
+                <span class="fact-label">Top category</span>
+                <span class="fact-value" id="fact-overview-top-cat">Food & Dining (₹1,200.00)</span>
+              </div>
+              <div class="fact-row">
+                <span class="fact-label">Average steps</span>
+                <span class="fact-value" id="fact-overview-avg-steps">6,500</span>
+              </div>
+              <div class="fact-row">
+                <span class="fact-label">Average water (ml)</span>
+                <span class="fact-value" id="fact-overview-avg-water">1,800</span>
+              </div>
+              <div class="fact-row">
+                <span class="fact-label">Workouts</span>
+                <span class="fact-value" id="fact-overview-workouts">3</span>
+              </div>
+              <div id="fact-overview-mood-section">
+                <div class="fact-section-title">Mood (7 days)</div>
+                <div class="fact-sub-list">
+                  <div class="fact-row sub-row"><span class="fact-label">Entries</span><span class="fact-value" id="fact-overview-mood-entries">5</span></div>
+                  <div class="fact-row sub-row"><span class="fact-label">Average score</span><span class="fact-value" id="fact-overview-mood-avg">3.4</span></div>
+                  <div class="fact-row sub-row"><span class="fact-label">Low days</span><span class="fact-value" id="fact-overview-mood-low">1</span></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- AI Summary Box -->
+            <div class="ai-summary-box" id="ai-summary-overview">
+              <div class="ai-summary-top">
+                <div class="ai-badge"><span class="sparkle">✦</span> AI Summary</div>
+                <span class="stale-chip" id="stale-chip-overview" style="display: none;">Out of date: your data changed</span>
+              </div>
+              <p class="ai-summary-text" id="ai-text-overview">In the last 7 days you logged 3 workouts and averaged 6,500 steps, while your spending was ₹3,200.00 led by Food & Dining. You recorded 5 mood entries with an average score of 3.4.</p>
+              <div class="ai-disclaimer">AI-written from the numbers above. Not financial or medical advice.</div>
+            </div>
+
+            <div class="insight-fallback-msg" id="fallback-overview" style="display: none;"></div>
+
+            <!-- Actions -->
+            <div class="insight-card-footer">
+              <button class="btn-primary btn-block btn-generate-summary" data-kind="overview_week" id="btn-generate-overview">
+                <span class="sparkle">✦</span>
+                <span class="btn-text-label">Refresh summary</span>
+              </button>
+              <div class="calls-left-hint"><span class="calls-count">37</span> summaries left today</div>
+            </div>
+          </div>
+
+          <!-- AI Settings Link Button -->
+          <div class="ai-settings-button-wrap">
+            <button id="btn-open-ai-settings" class="btn-secondary btn-block">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+              <span>AI settings</span>
+            </button>
+          </div>
+        </section>
+      </main>
+
+      <!-- Bottom Navigation Bar -->
+      <nav class="bottom-nav glass-nav">
+        <button class="nav-item active" data-tab="expenses" aria-label="Expenses Tab">
+          <svg class="nav-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8M12 6v12"/></svg>
+          <span class="nav-label">Expenses</span>
+        </button>
+        <button class="nav-item" data-tab="fitness" aria-label="Fitness Tab">
+          <svg class="nav-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="2"/><path d="m4 17 6-4 4 2 6-5"/></svg>
+          <span class="nav-label">Fitness</span>
+        </button>
+        <button class="nav-item" data-tab="insights" aria-label="Insights Tab">
+          <svg class="nav-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+          <span class="nav-label">Insights</span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- ==================== MODALS ==================== -->
+
+    <!-- Bank Accounts Sheet Modal -->
+    <div id="modal-banks" class="modal-overlay">
+      <div class="modal-card glass-panel">
+        <div class="modal-header">
+          <h3>Bank Accounts</h3>
+          <button class="icon-btn btn-close-modal" data-close="modal-banks">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div id="bank-limit-alert" class="alert-box error" style="display: none;"></div>
+          <div id="bank-accounts-list" class="accounts-list">
+            <!-- Dynamically Rendered -->
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="btn-add-account-dialog" class="btn-primary btn-block">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span>Add Bank Account</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add/Edit Bank Account Form Modal -->
+    <div id="modal-account-form" class="modal-overlay">
+      <div class="modal-card glass-panel">
+        <div class="modal-header">
+          <h3 id="account-form-title">Add Bank Account</h3>
+          <button class="icon-btn btn-close-modal" data-close="modal-account-form">&times;</button>
+        </div>
+        <form id="form-bank-account" class="modal-body">
+          <input type="hidden" id="account-edit-id">
+          
+          <div class="form-group" id="group-bank-select">
+            <label for="input-bank-id">Bank</label>
+            <select id="input-bank-id" required>
+              <!-- Filled via JS -->
+            </select>
+          </div>
+
+          <div class="form-group" id="group-currency-select">
+            <label for="input-currency-id">Currency</label>
+            <select id="input-currency-id" required>
+              <!-- Filled via JS -->
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="input-account-nickname">Nickname (optional)</label>
+            <input type="text" id="input-account-nickname" placeholder="e.g. Salary Account">
+          </div>
+
+          <div class="form-group">
+            <label for="input-account-last4">Last 4 Digits (optional)</label>
+            <input type="text" id="input-account-last4" maxlength="4" pattern="^[0-9]{4}$" placeholder="1234">
+          </div>
+
+          <div class="form-group">
+            <label for="input-account-type">Account Type</label>
+            <select id="input-account-type">
+              <option value="savings">Savings</option>
+              <option value="current">Current</option>
+              <option value="credit">Credit</option>
+            </select>
+          </div>
+
+          <div id="account-dialog-error" class="alert-box error" style="display: none;"></div>
+
+          <div class="modal-footer modal-actions">
+            <button type="button" class="btn-secondary" data-close="modal-account-form">Cancel</button>
+            <button type="submit" class="btn-primary">Save Account</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Profile Sheet Modal -->
+    <div id="modal-profile" class="modal-overlay">
+      <div class="modal-card glass-panel">
+        <div class="modal-header">
+          <h3>User Profile</h3>
+          <button class="icon-btn btn-close-modal" data-close="modal-profile">&times;</button>
+        </div>
+        <form id="form-profile" class="modal-body">
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="profile-email" readonly class="input-readonly">
+          </div>
+
+          <div class="form-group">
+            <label for="profile-name">Display Name</label>
+            <input type="text" id="profile-name" placeholder="Your Name">
+          </div>
+
+          <div class="form-group">
+            <label for="profile-dob">Date of Birth</label>
+            <input type="date" id="profile-dob">
+          </div>
+
+          <div class="form-group">
+            <label for="profile-sex">Sex at Birth</label>
+            <select id="profile-sex">
+              <option value="">Not specified</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="profile-height">Height (cm)</label>
+              <input type="number" id="profile-height" min="50" max="250" step="0.1" placeholder="175">
+            </div>
+            <div class="form-group">
+              <label for="profile-weight">Weight (kg)</label>
+              <input type="number" id="profile-weight" min="20" max="400" step="0.1" placeholder="70">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="profile-timezone">Timezone</label>
+            <input type="text" id="profile-timezone" required value="Asia/Kolkata">
+          </div>
+
+          <div id="profile-alert" class="alert-box success" style="display: none;"></div>
+
+          <button type="submit" class="btn-primary btn-block">Save Profile</button>
+
+          <hr class="modal-divider">
+
+          <div class="profile-danger-actions">
+            <button type="button" id="btn-logout" class="btn-secondary btn-block">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+              <span>Log Out</span>
+            </button>
+            <button type="button" id="btn-delete-account" class="btn-danger btn-block">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6"/></svg>
+              <span>Delete Account</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ==================== PHASE 2 MODALS ==================== -->
+    
+    <!-- Transaction Form Modal -->
+    <div id="modal-transaction-form" class="modal-overlay">
+      <div class="modal-card glass-panel">
+        <div class="modal-header">
+          <h3 id="tx-form-title">Add Transaction</h3>
+          <button class="icon-btn btn-close-modal" data-close="modal-transaction-form">&times;</button>
+        </div>
+        <form id="form-transaction" class="modal-body">
+          <input type="hidden" id="tx-edit-id">
+          
+          <div id="tx-restricted-warning" class="alert-box error" style="display: none; margin-bottom: 12px;">
+            Unlink or resolve the match first to modify amount or bank account.
+          </div>
+
+          <div class="form-group">
+            <label for="tx-account">Bank Account</label>
+            <select id="tx-account" required>
+              <!-- Filled via JS -->
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Direction</label>
+            <div class="direction-toggle form-dir-toggle">
+              <button type="button" class="dir-chip active" id="btn-dir-debit">Debit (-)</button>
+              <button type="button" class="dir-chip" id="btn-dir-credit">Credit (+)</button>
+            </div>
+            <input type="hidden" id="tx-direction" value="debit">
+          </div>
+
+          <div class="form-group">
+            <label for="tx-amount">Amount</label>
+            <input type="number" id="tx-amount" step="0.01" min="0.01" required placeholder="0.00">
+          </div>
+
+          <div class="form-group">
+            <label for="tx-merchant">Merchant (optional)</label>
+            <input type="text" id="tx-merchant" placeholder="e.g. Swiggy, Amazon">
+          </div>
+
+          <div class="form-group">
+            <label for="tx-category">Category (optional)</label>
+            <select id="tx-category">
+              <!-- Filled via JS -->
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="tx-datetime">Date &amp; Time</label>
+            <input type="datetime-local" id="tx-datetime" required>
+          </div>
+
+          <div id="tx-form-alert" class="alert-box error" style="display: none;"></div>
+
+          <div class="tx-modal-actions">
+            <button type="submit" id="btn-save-tx" class="btn-primary btn-block">Save Transaction</button>
+            <div id="tx-edit-extra-actions" style="display: none; margin-top: 10px; display: flex; gap: 8px;">
+              <button type="button" id="btn-unlink-tx" class="btn-secondary" style="flex: 1; display: none;">Unlink Match</button>
+              <button type="button" id="btn-delete-tx" class="btn-danger" style="flex: 1;">Delete</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Categories Modal -->
+    <div id="modal-categories" class="modal-overlay">
+      <div class="modal-card glass-panel">
+        <div class="modal-header">
+          <h3>Categories</h3>
+          <button class="icon-btn btn-close-modal" data-close="modal-categories">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="add-category-bar">
+            <input type="text" id="input-new-cat-name" placeholder="Category name..." maxlength="60">
+            <select id="select-new-cat-type">
+              <option value="expense">Expense</option>
+              <option value="income">Income</option>
+            </select>
+            <button type="button" id="btn-create-category" class="btn-primary btn-sm">Add</button>
+          </div>
+          <div id="cat-alert" class="alert-box error" style="display: none; margin-top: 8px;"></div>
+          <div id="categories-list" class="categories-list" style="margin-top: 14px;">
+            <!-- Rendered via JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Budgets Modal -->
+    <div id="modal-budgets" class="modal-overlay">
+      <div class="modal-card glass-panel">
+        <div class="modal-header">
+          <h3>Monthly Budgets</h3>
+          <button class="icon-btn btn-close-modal" data-close="modal-budgets">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="add-budget-box glass-card" style="padding: 12px; margin-bottom: 14px; border-radius: var(--radius-sm);">
+            <div class="form-row">
+              <div class="form-group" style="flex: 1.5;">
+                <label for="budget-category-select">Scope</label>
+                <select id="budget-category-select">
+                  <option value="">Overall (All Expenses)</option>
+                </select>
+              </div>
+              <div class="form-group" style="flex: 1;">
+                <label for="budget-amount-input">Amount</label>
+                <input type="number" id="budget-amount-input" step="0.01" min="0.01" placeholder="5000">
+              </div>
+            </div>
+            <button type="button" id="btn-create-budget" class="btn-primary btn-block" style="margin-top: 8px;">Set Budget</button>
+            <div id="budget-alert" class="alert-box error" style="display: none; margin-top: 8px;"></div>
+          </div>
+          <div id="budgets-list" class="budgets-list">
+            <!-- Rendered via JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Review Queue Modal -->
+    <div id="modal-review-queue" class="modal-overlay">
+      <div class="modal-card glass-panel">
+        <div class="modal-header">
+          <h3>Review Queue</h3>
+          <button class="icon-btn btn-close-modal" data-close="modal-review-queue">&times;</button>
+        </div>
+        <div class="modal-body" id="review-queue-content">
+          <!-- Rendered via JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== PHASE 4 FITNESS MODALS ==================== -->
+
+    <!-- Goals Modal -->
+    <div id="modal-fitness-goals" class="modal-overlay">
+      <div class="modal-card glass-panel">
+        <div class="modal-header">
+          <h3>Fitness Goals</h3>
+          <button class="icon-btn btn-close-modal" data-close="modal-fitness-goals">&times;</button>
+        </div>
+        <form id="form-fitness-goals" class="modal-body">
+          <div class="form-group">
+            <label for="goal-steps-input">Daily steps goal</label>
+            <input type="number" id="goal-steps-input" required min="100" max="100000" placeholder="8000">
+            <span class="field-hint">Between 100 and 100,000 steps</span>
+          </div>
+          <div class="form-group">
+            <label for="goal-water-input">Daily water goal (ml)</label>
+            <input type="number" id="goal-water-input" required min="250" max="10000" placeholder="2000">
+            <span class="field-hint">Between 250 and 10,000 ml</span>
+          </div>
+          <div class="form-group">
+            <label for="goal-calorie-input">Daily calorie goal (optional)</label>
+            <input type="number" id="goal-calorie-input" min="500" max="10000" placeholder="e.g. 2200">
+            <span class="field-hint">Between 500 and 10,000 kcal or empty</span>
+          </div>
+          <div id="fitness-goals-alert" class="alert-box error" style="display: none;"></div>
+          <button type="submit" class="btn-primary btn-block" style="margin-top: 16px;">Save Goals</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Edit Steps Modal -->
+    <div id="modal-edit-steps" class="modal-overlay">
+      <div class="modal-card glass-panel">
+        <div class="modal-header">
+          <h3>Edit Steps</h3>
+          <button class="icon-btn btn-close-modal" data-close="modal-edit-steps">&times;</button>
+        </div>
+        <form id="form-edit-steps" class="modal-body">
+          <div class="form-group">
+            <label for="edit-steps-input">Steps Count</label>
+            <input type="number" id="edit-steps-input" required min="0" max="200000" placeholder="5000">
+            <span class="field-hint">Manual entry for selected day (0 to 200,000)</span>
+          </div>
+          <div id="edit-steps-alert" class="alert-box error" style="display: none;"></div>
+          <button type="submit" class="btn-primary btn-block" style="margin-top: 16px;">Save Steps</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Custom Water Modal -->
+    <div id="modal-custom-water" class="modal-overlay">
+      <div class="modal-card glass-panel">
+        <div class="modal-header">
+          <h3>Add Water</h3>
+          <button class="icon-btn btn-close-modal" data-close="modal-custom-water">&times;</button>
+        </div>
+        <form id="form-custom-water" class="modal-body">
+          <div class="form-group">
+            <label for="custom-water-input">Amount (ml)</label>
+            <input type="number" id="custom-water-input" required min="1" max="5000" placeholder="300">
+            <span class="field-hint">Between 1 and 5,000 ml</span>
+          </div>
+          <button type="submit" class="btn-primary btn-block" style="margin-top: 16px;">Add Water</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Add Food Modal -->
+    <div id="modal-add-food" class="modal-overlay">
+      <div class="modal-card glass-panel">
+        <div class="modal-header">
+          <h3>Add Food / Calories</h3>
+          <button class="icon-btn btn-close-modal" data-close="modal-add-food">&times;</button>
+        </div>
+        <form id="form-add-food" class="modal-body">
+          <div class="form-group">
+            <label for="add-food-kcal-input">Calories (kcal) *</label>
+            <input type="number" id="add-food-kcal-input" required min="1" max="10000" placeholder="350">
+          </div>
+          <div class="form-group">
+            <label for="add-food-label-input">Label (optional)</label>
+            <input type="text" id="add-food-label-input" maxlength="80" placeholder="e.g. Oatmeal & berries">
+          </div>
+          <div id="add-food-alert" class="alert-box error" style="display: none;"></div>
+          <button type="submit" class="btn-primary btn-block" style="margin-top: 16px;">Add Entry</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Workout Form Modal -->
+    <div id="modal-workout-form" class="modal-overlay">
+      <div class="modal-card glass-panel" style="max-height: 90vh; overflow-y: auto;">
+        <div class="modal-header">
+          <h3 id="workout-form-title">Log Workout</h3>
+          <button class="icon-btn btn-close-modal" data-close="modal-workout-form">&times;</button>
+        </div>
+        <form id="form-workout" class="modal-body">
+          <div class="form-group">
+            <label for="workout-name-input">Workout Name *</label>
+            <input type="text" id="workout-name-input" required maxlength="80" placeholder="Daily Routine">
+          </div>
+          <div style="display: flex; gap: 10px;">
+            <div class="form-group" style="flex: 1;">
+              <label for="workout-duration-input">Duration (min) *</label>
+              <input type="number" id="workout-duration-input" required min="1" max="600" placeholder="30">
+            </div>
+            <div class="form-group" style="flex: 1;">
+              <label for="workout-intensity-select">Intensity *</label>
+              <select id="workout-intensity-select" class="filter-select" style="width: 100%; height: 42px;">
+                <option value="light">Light</option>
+                <option value="moderate" selected>Moderate</option>
+                <option value="vigorous">Vigorous</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="workout-notes-input">Notes (optional)</label>
+            <input type="text" id="workout-notes-input" maxlength="500" placeholder="Felt great">
+          </div>
+
+          <div class="workout-entries-header">
+            <h4>Exercises (<span id="workout-entries-count">0</span>)</h4>
+            <div style="display: flex; gap: 8px;">
+              <button type="button" id="btn-workout-add-lib" class="btn-tool" style="font-size: 11px;">+ Library</button>
+              <button type="button" id="btn-workout-add-custom" class="btn-tool" style="font-size: 11px;">+ Custom</button>
+            </div>
+          </div>
+
+          <div id="workout-entries-list" class="workout-entries-list">
+            <!-- Rendered dynamically -->
+          </div>
+
+          <div id="workout-form-alert" class="alert-box error" style="display: none; margin-top: 12px;"></div>
+          <button type="submit" id="btn-submit-workout" class="btn-primary btn-block" style="margin-top: 16px;">Save Workout</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Workout History Modal -->
+    <div id="modal-workout-history" class="modal-overlay">
+      <div class="modal-card glass-panel" style="max-height: 85vh; overflow-y: auto;">
+        <div class="modal-header">
+          <h3>Workout History</h3>
+          <button class="icon-btn btn-close-modal" data-close="modal-workout-history">&times;</button>
+        </div>
+        <div class="modal-body" id="workout-history-content">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Exercise Library Modal -->
+    <div id="modal-exercise-library" class="modal-overlay">
+      <div class="modal-card glass-panel" style="max-height: 90vh; display: flex; flex-direction: column;">
+        <div class="modal-header">
+          <h3 id="library-modal-title">Exercise Library</h3>
+          <button class="icon-btn btn-close-modal" data-close="modal-exercise-library">&times;</button>
+        </div>
+        <div style="padding: 12px 16px; border-bottom: 1px solid var(--border-subtle);">
+          <input type="text" id="library-search-input" placeholder="Search exercises..." style="width: 100%; padding: 10px 14px; background: rgba(0,0,0,0.25); border: 1px solid var(--border-subtle); border-radius: 8px; color: var(--text-primary);">
+          <div style="display: flex; gap: 8px; margin-top: 10px; overflow-x: auto; padding-bottom: 4px;">
+            <button type="button" id="btn-lib-favorites-filter" class="chip-filter">★ Favorites</button>
+            <select id="lib-filter-muscle" class="filter-select-mini"><option value="">All Muscles</option></select>
+            <select id="lib-filter-equipment" class="filter-select-mini"><option value="">All Equipment</option></select>
+            <select id="lib-filter-level" class="filter-select-mini"><option value="">All Levels</option></select>
+            <select id="lib-filter-category" class="filter-select-mini"><option value="">All Categories</option></select>
+          </div>
+        </div>
+        <div id="exercise-library-items" class="modal-body" style="flex: 1; overflow-y: auto; padding: 12px 16px;">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Exercise Detail Modal -->
+    <div id="modal-exercise-detail" class="modal-overlay">
+      <div class="modal-card glass-panel" style="max-height: 90vh; overflow-y: auto;">
+        <div class="modal-header">
+          <h3 id="exercise-detail-name">Exercise</h3>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <button id="btn-exercise-detail-fav" class="icon-btn" title="Toggle Favorite">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </button>
+            <button class="icon-btn btn-close-modal" data-close="modal-exercise-detail">&times;</button>
+          </div>
+        </div>
+        <div class="modal-body">
+          <!-- 4:3 Alternating Hero Image -->
+          <div class="exercise-hero-container" id="exercise-hero-container">
+            <img id="exercise-hero-img" src="" alt="How to perform exercise" style="width: 100%; height: 220px; object-fit: contain; background: #000; border-radius: 12px;">
+            <div id="exercise-thumbnails-row" class="exercise-thumb-row"></div>
+          </div>
+
+          <!-- Tags -->
+          <div id="exercise-detail-tags" class="exercise-tags-wrap" style="margin: 14px 0;"></div>
+
+          <!-- Numbered Instructions -->
+          <h4 style="margin: 16px 0 8px 0; color: #818CF8;">Instructions</h4>
+          <ol id="exercise-detail-instructions" class="instructions-numbered-list"></ol>
+
+          <p style="font-size: 11px; color: var(--text-muted); margin-top: 20px; text-align: center;">
+            Exercise data: free-exercise-db (public domain)
+          </p>
+
+          <button type="button" id="btn-exercise-add-to-workout" class="btn-primary btn-block" style="margin-top: 16px;">
+            Add to Workout
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fitness Charts Modal -->
+    <div id="modal-fitness-charts" class="modal-overlay">
+      <div class="modal-card glass-panel" style="max-height: 90vh; overflow-y: auto;">
+        <div class="modal-header">
+          <h3>Fitness Charts</h3>
+          <button class="icon-btn btn-close-modal" data-close="modal-fitness-charts">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div style="display: flex; justify-content: center; margin-bottom: 16px;">
+            <div class="direction-toggle">
+              <button type="button" class="dir-chip active" id="btn-chart-7d">7 Days</button>
+              <button type="button" class="dir-chip" id="btn-chart-30d">30 Days</button>
+            </div>
+          </div>
+
+          <!-- Steps Chart -->
+          <div class="chart-box glass-panel">
+            <h4>Steps</h4>
+            <div id="chart-steps-bars" class="svg-bar-chart"></div>
+            <div id="chart-steps-avg" class="chart-avg-label">Average: 0 steps</div>
+          </div>
+
+          <!-- Water Chart -->
+          <div class="chart-box glass-panel" style="margin-top: 16px;">
+            <h4>Water (ml)</h4>
+            <div id="chart-water-bars" class="svg-bar-chart"></div>
+            <div id="chart-water-avg" class="chart-avg-label">Average: 0 ml</div>
+          </div>
+
+          <!-- Calories Chart -->
+          <div class="chart-box glass-panel" style="margin-top: 16px;">
+            <h4>Calories In (kcal)</h4>
+            <div id="chart-calories-bars" class="svg-bar-chart"></div>
+            <div id="chart-calories-avg" class="chart-avg-label">Average: 0 kcal</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== PHASE 5 AI & MOOD MODALS ==================== -->
+
+    <!-- Mood History Modal -->
+    <div id="modal-mood-history" class="modal-overlay">
+      <div class="modal-card glass-panel">
+        <div class="modal-header">
+          <h3>Mood History (30 Days)</h3>
+          <button class="icon-btn btn-close-modal" data-close="modal-mood-history">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div id="mood-history-list" class="mood-history-list">
+            <!-- Dynamically populated via JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI Settings Modal -->
+    <div id="modal-ai-settings" class="modal-overlay">
+      <div class="modal-card glass-panel">
+        <div class="modal-header">
+          <h3>AI Settings</h3>
+          <button class="icon-btn btn-close-modal" data-close="modal-ai-settings">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="setting-toggle-row">
+            <div class="setting-text">
+              <div class="setting-title">Use AI summaries</div>
+              <div class="setting-desc">Allow generating summaries using Google Gemini</div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="toggle-ai-enabled" checked>
+              <span class="slider round"></span>
+            </label>
+          </div>
+
+          <div class="setting-toggle-row">
+            <div class="setting-text">
+              <div class="setting-title">Include my mood in AI summaries</div>
+              <div class="setting-desc">Share aggregated mood counts and average score</div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="toggle-include-mood">
+              <span class="slider round"></span>
+            </label>
+          </div>
+
+          <div class="privacy-box glass-panel">
+            <div class="privacy-box-header">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#60A5FA" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              <span>Privacy Notice</span>
+            </div>
+            <p class="privacy-desc">
+              Summaries are written by Google Gemini on a free plan. Only numbers calculated by this app are sent: totals, averages, category names and goals. Your messages, merchant names, account details, names and mood notes are never sent. Google may use inputs on the free plan to improve its products. Mood numbers are sent only if you switch on "Include my mood".
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phase 6 Reminders Modal -->
+    <div id="modal-reminders" class="modal-overlay">
+      <div class="modal-card glass-panel">
+        <div class="modal-header">
+          <h3>Daily Reminders & Alerts</h3>
+          <button class="icon-btn btn-close-modal" data-close="modal-reminders">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="banner-notice info-banner">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            <span>Reminders are scheduled natively on Android. Here on web preview, schedules and simulated alerts are live.</span>
+          </div>
+
+          <!-- Water -->
+          <div class="setting-toggle-row">
+            <div class="setting-text">
+              <div class="setting-title">Water</div>
+              <div class="setting-desc">Every 2 hours, 09:00 to 21:00 (7 daily slots)</div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="toggle-water-reminder">
+              <span class="slider round"></span>
+            </label>
+          </div>
+
+          <!-- Workout -->
+          <div class="setting-toggle-row">
+            <div class="setting-text">
+              <div class="setting-title">Workout</div>
+              <div class="setting-desc">Daily reminder for scheduled workout</div>
+            </div>
+            <div class="setting-time-wrap">
+              <input type="time" id="time-workout-reminder" value="18:00" class="time-picker-input">
+              <label class="switch">
+                <input type="checkbox" id="toggle-workout-reminder">
+                <span class="slider round"></span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Mood -->
+          <div class="setting-toggle-row">
+            <div class="setting-text">
+              <div class="setting-title">Mood</div>
+              <div class="setting-desc">How was your day? Log your mood daily</div>
+            </div>
+            <div class="setting-time-wrap">
+              <input type="time" id="time-mood-reminder" value="21:00" class="time-picker-input">
+              <label class="switch">
+                <input type="checkbox" id="toggle-mood-reminder">
+                <span class="slider round"></span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Expenses -->
+          <div class="setting-toggle-row">
+            <div class="setting-text">
+              <div class="setting-title">Expenses</div>
+              <div class="setting-desc">Check today's spending in the app</div>
+            </div>
+            <div class="setting-time-wrap">
+              <input type="time" id="time-expenses-reminder" value="20:00" class="time-picker-input">
+              <label class="switch">
+                <input type="checkbox" id="toggle-expenses-reminder">
+                <span class="slider round"></span>
+              </label>
+            </div>
+          </div>
+
+          <hr class="modal-divider">
+
+          <!-- Budget alerts -->
+          <div class="setting-toggle-row">
+            <div class="setting-text">
+              <div class="setting-title">Budget alerts</div>
+              <div class="setting-desc">Notify when budgets reach 80% or 100% (no financial amounts or names exposed)</div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="toggle-budget-alerts" checked>
+              <span class="slider round"></span>
+            </label>
+          </div>
+
+          <div style="margin-top: 16px;">
+            <button id="btn-test-notification" class="btn-secondary btn-block">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              <span>Simulate Local Notification</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phase 6 Privacy & Data Export Modal -->
+    <div id="modal-privacy" class="modal-overlay">
+      <div class="modal-card glass-panel">
+        <div class="modal-header">
+          <h3>Privacy & Data Portability</h3>
+          <button class="icon-btn btn-close-modal" data-close="modal-privacy">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="privacy-box glass-panel" style="margin-bottom: 20px;">
+            <div class="privacy-box-header">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              <span style="color: #10B981; font-weight: bold;">Your Privacy Guarantee</span>
+            </div>
+            <p class="privacy-desc" style="margin-top: 10px; line-height: 1.5; font-size: 13.5px; color: var(--text-secondary);">
+              Your data is stored in your own free database. SMS from unknown senders is ignored. Only bank-style senders are read, and the message text is deleted after parsing. Uploaded statements are deleted after processing. AI summaries send only computed numbers (see AI settings).
+            </p>
+          </div>
+
+          <div class="export-section">
+            <h4 style="margin-bottom: 6px; font-size: 15px;">Data Ownership</h4>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">
+              Download a complete JSON export of all your transactions, budgets, fitness logs, workouts, and mood entries. Passwords, tokens, and raw fingerprints are never exported.
+            </p>
+            <button id="btn-export-data" class="btn-primary btn-block">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              <span>Export my data (JSON)</span>
+            </button>
+          </div>
+
+          <hr class="modal-divider" style="margin: 24px 0 16px 0;">
+
+          <div class="danger-section">
+            <h4 style="margin-bottom: 6px; font-size: 15px; color: #EF4444;">Delete Account</h4>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">
+              Permanently delete your account and wipe all stored financial, fitness, and mood history from the database.
+            </p>
+            <div id="delete-confirm-box" style="display: none; margin-bottom: 12px; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; padding: 12px;">
+              <p style="font-size: 13px; color: #FCA5A5; margin-bottom: 8px;">To permanently delete, type <strong>DELETE</strong> below:</p>
+              <input type="text" id="input-confirm-delete" placeholder="DELETE" class="form-input" style="text-transform: uppercase;">
+              <button id="btn-execute-delete" class="btn-danger btn-block" style="margin-top: 8px;" disabled>Permanently Delete Everything</button>
+            </div>
+            <button id="btn-initiate-delete" class="btn-secondary btn-block" style="color: #EF4444; border-color: rgba(239, 68, 68, 0.4);">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6"/></svg>
+              <span>Delete my account</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
